@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace DWIS.DAQBridge.CleanSight.Server
 {
-    public class Worker : DWISWorker
+    public class Worker : DWISWorkerWithMQTT
     {
         private CleanSightInputData InputData { get; } = new CleanSightInputData();
 

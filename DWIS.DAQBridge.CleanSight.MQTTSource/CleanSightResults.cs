@@ -38,7 +38,6 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
         [MQTTTopic("DWIS/ComputedData/LengthSmall/CuttingSeparatorLogical/MaxCavingSizes")]
         public GaussianValuesProperty? MaxCavingSizes { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [MQTTTopic("DWIS/ComputedData/LengthSmall/CuttingSeparatorLogical/OverallMaxCavingSize")]
         public ScalarProperty? OverallMaxCavingSize { get; set; } = null;
 

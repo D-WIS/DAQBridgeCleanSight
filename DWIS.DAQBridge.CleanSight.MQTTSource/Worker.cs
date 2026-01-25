@@ -4,7 +4,7 @@ using DWIS.RigOS.Common.Worker;
 
 namespace DWIS.DAQBridge.CleanSight.MQTTSource
 {
-    public class Worker : DWISWorker
+    public class Worker : DWISWorkerWithMQTT
     {
         private CleanSightOperationData OperationData { get; } = new CleanSightOperationData();
 
