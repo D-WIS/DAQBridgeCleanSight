@@ -10,10 +10,8 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
 {
     internal class CleanSightOperationData : DWISData
     {
-        private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightOperationData)));
         private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightOperationData)));
         private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, ManifestFile>> LocalManifests = new(BuildManifests(typeof(CleanSightOperationData), "CleanSightOperationDataManifest", "DrillDocs", "DWISBridge"));
-        public override Lazy<IReadOnlyDictionary<string, PropertyInfo>> TopicPropertyMap { get => LocalTopicPropertyMap; }
         public override Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> SparQLQueries { get => LocalSparQLQueries; }
         public override Lazy<IReadOnlyDictionary<PropertyInfo, ManifestFile>> Manifests { get => LocalManifests; }
 
@@ -100,6 +98,24 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("annulusOutletJunction#01", Verbs.Enum.HasDownstreamBranch, "outletHydraulicBranch#01")]
         [SemanticFact("flowRateOutProportion#01", Verbs.Enum.IsAssociatedToHydraulicBranch, "outletHydraulicBranch#01")]
         public ScalarProperty? FlowrateOutProportion { get; set; } = null;
+
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
+        [Mandatory(CommonProperty.MandatoryType.General)]
+        [SemanticDiracVariable("activeVolume")]
+        [SemanticFact("activeVolume", Nouns.Enum.DynamicDrillingSignal)]
+        [SemanticFact("activeVolume#01", Nouns.Enum.Measurement)]
+        [SemanticFact("activeVolume#01", Nouns.Enum.ContinuousDataType)]
+        [SemanticFact("activeVolume#01", Verbs.Enum.HasDynamicValue, "activeVolume")]
+        [SemanticFact("activeVolume#01", Verbs.Enum.IsOfMeasurableQuantity, DrillingPhysicalQuantity.QuantityEnum.VolumeDrilling)]
+        [SemanticFact("movingAverageactiveVolume", Nouns.Enum.MovingAverage)]
+        [SemanticFact("activeVolume#01", Verbs.Enum.IsTransformationOutput, "movingAverageactiveVolume")]
+        [SemanticFact("annulusOutletJunction#01", Nouns.Enum.AnnulusOutletJunction)]
+        [SemanticFact("outletHydraulicBranch#01", Nouns.Enum.HydraulicBranch)]
+        [SemanticFact("annulusOutletJunction#01", Verbs.Enum.HasDownstreamBranch, "outletHydraulicBranch#01")]
+        [SemanticFact("activeVolume#01", Verbs.Enum.IsAssociatedToHydraulicBranch, "outletHydraulicBranch#01")]
+        [SemanticFact("activePitLogical#01", Nouns.Enum.ActivePitLogical)]
+        [SemanticFact("activeVolume#01", Verbs.Enum.IsVolumeAt, "activePitLogical#01")]
+        public ScalarProperty? ActiveVolume { get; set; } = null;
 
         [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]

@@ -1,11 +1,13 @@
 ﻿using DWIS.API.DTO;
 using DWIS.RigOS.Common.Worker;
+using DWIS.Vocabulary.Schemas;
 using OSDC.DotnetLibraries.Drilling.DrillingProperties;
+using OSDC.UnitConversion.Conversion.DrillingEngineering;
 using System.Reflection;
 
 namespace DWIS.DAQBridge.CleanSight.MQTTSource
 {
-    internal class CleanSightOperationData : DWISData
+    internal class CleanSightOperationData : DWISDataWithMQTT
     {
         private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightOperationData)));
         private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightOperationData)));
@@ -28,6 +30,9 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
 
         [MQTTTopic("DWIS/Measurement/ProportionStandard/AnnulusOutletHydraulicBranch/FlowrateOutProportion")]
         public ScalarProperty? FlowrateOutProportion { get; set; } = null;
+
+        [MQTTTopic("DWIS/Measurement/VolumeDrilling/activePitLogical/ActiveVolume")]
+        public ScalarProperty? ActiveVolume { get; set; } = null;
 
         [MQTTTopic("DWIS/Measurement/HeightDrilling/DrillPipeElevator/BlockPosition")]
         public ScalarProperty? BlockPosition { get; set; } = null;

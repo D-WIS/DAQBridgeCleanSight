@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DWIS.RigOS.Common.Worker" Version="1.0.5-build.411" />
+    <PackageReference Include="DWIS.RigOS.Common.Worker" Version="1.0.5-build.419" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
   </ItemGroup>
 </Project>

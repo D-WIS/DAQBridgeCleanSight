@@ -3,12 +3,12 @@ using DWIS.RigOS.Common.Worker;
 
 namespace DWIS.DAQBridge.CleanSight.OPCUASource
 {
-    public class Worker : DWISWorker
+    public class Worker : DWISWorker<Configuration>
     {
         private CleanSightOperationData OperationData { get; set; } = new CleanSightOperationData();
         private CleanSightResults Results { get; set; } = new CleanSightResults();
 
-        public Worker(ILogger<IDWISWorker> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
+        public Worker(ILogger<IDWISWorker<Configuration>> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
         {
         }
  

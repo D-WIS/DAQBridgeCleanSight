@@ -8,7 +8,7 @@ using DWIS.RigOS.Common.Worker;
 
 namespace DWIS.DAQBridge.CleanSight.Server
 {
-    public class CleanSightOutputData : DWISData
+    public class CleanSightOutputData : DWISDataWithMQTT
     {
         private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightOutputData)));
         private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightOutputData)));

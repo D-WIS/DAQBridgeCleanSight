@@ -8,7 +8,7 @@ using DWIS.RigOS.Common.Worker;
 
 namespace DWIS.DAQBridge.CleanSight.Server
 {
-    public class CleanSightInputData : DWISData
+    public class CleanSightInputData : DWISDataWithMQTT
     {
         private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightInputData)));
         private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightInputData)));
@@ -110,6 +110,27 @@ namespace DWIS.DAQBridge.CleanSight.Server
         [SemanticFact("flowRateOutProportion#01", Verbs.Enum.IsAssociatedToHydraulicBranch, "outletHydraulicBranch#01")]
         [MQTTTopic("DWIS/Measurement/ProportionStandard/AnnulusOutletHydraulicBranch/FlowrateOutProportion")]
         public ScalarProperty? FlowrateOutProportion { get; set; } = null;
+
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
+        [Mandatory(CommonProperty.MandatoryType.General)]
+        [SemanticExclusiveOr(1, 2)]
+        [SemanticDiracVariable("activeVolume")]
+        [SemanticFact("activeVolume", Nouns.Enum.DynamicDrillingSignal)]
+        [SemanticFact("activeVolume#01", Nouns.Enum.Measurement)]
+        [SemanticFact("activeVolume#01", Nouns.Enum.ContinuousDataType)]
+        [SemanticFact("activeVolume#01", Verbs.Enum.HasDynamicValue, "activeVolume")]
+        [SemanticFact("activeVolume#01", Verbs.Enum.IsOfMeasurableQuantity, DrillingPhysicalQuantity.QuantityEnum.VolumeDrilling)]
+        [OptionalFact(1, "movingAverageActiveVolume", Nouns.Enum.MovingAverage)]
+        [OptionalFact(1, "activeVolume#01", Verbs.Enum.IsTransformationOutput, "movingAverageActiveVolume")]
+        [OptionalFact(1, "annulusOutletJunction#01", Nouns.Enum.AnnulusOutletJunction)]
+        [OptionalFact(1, "outletHydraulicBranch#01", Nouns.Enum.HydraulicBranch)]
+        [OptionalFact(1, "annulusOutletJunction#01", Verbs.Enum.HasDownstreamBranch, "outletHydraulicBranch#01")]
+        [OptionalFact(1, "activeVolume#01", Verbs.Enum.IsAssociatedToHydraulicBranch, "outletHydraulicBranch#01")]
+        [OptionalFact(1, "activePitLogical#01", Nouns.Enum.ActivePitLogical)]
+        [OptionalFact(1, "activeVolume#01", Verbs.Enum.IsVolumeAt, "activePitLogical#01")]
+        [OptionalFact(2, "activeVolume#01", Nouns.Enum.ActiveVolume)]
+        [MQTTTopic("DWIS/Measurement/VolumeDrilling/activePitLogical/ActiveVolume")]
+        public ScalarProperty? ActiveVolume { get; set; } = null;
 
         [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
         [Mandatory(CommonProperty.MandatoryType.General)]

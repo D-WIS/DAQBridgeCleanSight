@@ -59,6 +59,7 @@ For the operational data, the following MQTT topics are used:
 - DWIS/Measurement/VolumetricFlowrateDrilling/TOSInletHydraulicBranch/FlowrateIn
 - DWIS/Measurement/VolumetricFlowrateDrilling/AnnulusOutletHydraulicBranch/FlowrateOut
 - DWIS/Measurement/ProportionStandard/AnnulusOutletHydraulicBranch/FlowrateOutProportion
+- DWIS/Measurement/VolumeDrilling/activePitLogical/ActiveVolume
 - DWIS/Measurement/HeightDrilling/DrillPipeElevator/BlockPosition
 - DWIS/Measurement/MassDensityDrilling/TOSInletHydraulicBranch/DrillingFluidDensityIn
 - DWIS/Measurement/MassDensityDrilling/AnnulusOutletHydraulicBranch/DrillingFluidDensityOut

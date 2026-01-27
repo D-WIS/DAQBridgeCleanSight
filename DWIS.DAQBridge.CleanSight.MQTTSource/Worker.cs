@@ -4,13 +4,13 @@ using DWIS.RigOS.Common.Worker;
 
 namespace DWIS.DAQBridge.CleanSight.MQTTSource
 {
-    public class Worker : DWISWorkerWithMQTT
+    public class Worker : DWISWorkerWithMQTT<ConfigurationForMQTT>
     {
         private CleanSightOperationData OperationData { get; } = new CleanSightOperationData();
 
         private CleanSightResults CleanSightResults { get; } = new CleanSightResults();
 
-        public Worker(ILogger<IDWISWorker> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
+        public Worker(ILogger<IDWISWorker<ConfigurationForMQTT>> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
         {
         }
 
@@ -27,7 +27,6 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
 
         protected override async Task Loop(CancellationToken stoppingToken)
         {
-            Random rnd = new Random();
             if (_mqttClient is not null)
             {
                 try
@@ -58,7 +57,7 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
                                 }
                             }
                         }
-                        ConfigurationUpdater.Instance.UpdateConfiguration(this);
+                        ConfigurationUpdater<ConfigurationForMQTT>.Instance.UpdateConfiguration(this);
                         await Task.Delay(LoopSpan, stoppingToken);
                     }
                 }
