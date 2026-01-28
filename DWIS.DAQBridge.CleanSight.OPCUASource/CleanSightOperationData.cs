@@ -109,10 +109,6 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("activeVolume#01", Verbs.Enum.IsOfMeasurableQuantity, DrillingPhysicalQuantity.QuantityEnum.VolumeDrilling)]
         [SemanticFact("movingAverageactiveVolume", Nouns.Enum.MovingAverage)]
         [SemanticFact("activeVolume#01", Verbs.Enum.IsTransformationOutput, "movingAverageactiveVolume")]
-        [SemanticFact("annulusOutletJunction#01", Nouns.Enum.AnnulusOutletJunction)]
-        [SemanticFact("outletHydraulicBranch#01", Nouns.Enum.HydraulicBranch)]
-        [SemanticFact("annulusOutletJunction#01", Verbs.Enum.HasDownstreamBranch, "outletHydraulicBranch#01")]
-        [SemanticFact("activeVolume#01", Verbs.Enum.IsAssociatedToHydraulicBranch, "outletHydraulicBranch#01")]
         [SemanticFact("activePitLogical#01", Nouns.Enum.ActivePitLogical)]
         [SemanticFact("activeVolume#01", Verbs.Enum.IsVolumeAt, "activePitLogical#01")]
         public ScalarProperty? ActiveVolume { get; set; } = null;
