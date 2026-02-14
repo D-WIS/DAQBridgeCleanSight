@@ -84,7 +84,7 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Verbs.Enum.IsComputedBy, "ImageInterpreter#01")]
         [SemanticFact("DrillDocs#01", Nouns.Enum.InstrumentationCompany)]
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
-        public GaussianValuesProperty? AccumulatedCuttingsRecoveryRates { get; set; } = null;
+        public GaussianValuesProperty? CuttingsRecoveryRates { get; set; } = null;
 
         [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
         [Mandatory(CommonProperty.MandatoryType.General)]

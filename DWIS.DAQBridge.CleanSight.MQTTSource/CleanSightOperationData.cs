@@ -49,9 +49,6 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
         [MQTTTopic("DWIS/Measurement/MassDensityDrilling/BHAAnnulusBranch/DownholeEquivalentStaticDensity")]
         public ScalarProperty? DownholeEquivalentStaticDensity { get; set; } = null;
 
-        [MQTTTopic("DWIS/Measurement/VolumeDrilling/TOSInletHydraulicBranch/ActivePitVolume")]
-        public ScalarProperty? ActivePitVolume { get; set; } = null;
-
         [MQTTTopic("DWIS/Measurement/PressureDrilling/TOSInletHydraulicBranch/StandPipePressure")]
         public ScalarProperty? StandPipePressure { get; set; } = null;
 

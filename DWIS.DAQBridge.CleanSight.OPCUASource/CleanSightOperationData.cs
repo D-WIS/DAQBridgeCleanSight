@@ -217,21 +217,6 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
 
         [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
-        [SemanticDiracVariable("activeVolume")]
-        [SemanticFact("activeVolume", Nouns.Enum.DynamicDrillingSignal)]
-        [SemanticFact("activeVolume#01", Nouns.Enum.Measurement)]
-        [SemanticFact("activeVolume#01", Nouns.Enum.ContinuousDataType)]
-        [SemanticFact("activeVolume#01", Verbs.Enum.HasDynamicValue, "activeVolume")]
-        [SemanticFact("activeVolume#01", Verbs.Enum.IsOfMeasurableQuantity, DrillingPhysicalQuantity.QuantityEnum.VolumeDrilling)]
-        [SemanticFact("movingAverageActiveVolume", Nouns.Enum.MovingAverage)]
-        [SemanticFact("activeVolume#01", Verbs.Enum.IsTransformationOutput, "movingAverageActiveVolume")]
-        [SemanticFact("activeDrillingSystem#01", Nouns.Enum.ActiveDrillingSystem)]
-        [SemanticFact("activeVolume#01", Verbs.Enum.IsPhysicallyLocatedAt, "activeDrillingSystem#01")]
-        [SemanticFact("activeVolume#01", Nouns.Enum.ActiveVolume)]
-        public ScalarProperty? ActivePitVolume { get; set; } = null;
-
-        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
-        [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticDiracVariable("SPP")]
         [SemanticFact("SPP", Nouns.Enum.DynamicDrillingSignal)]
         [SemanticFact("SPP#01", Nouns.Enum.Measurement)]

@@ -21,7 +21,7 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
         public ScalarProperty? AverageShakerLoadEstimate { get; set; } = null;
 
         [MQTTTopic("DWIS/ComputedData/VolumetricFlowrateDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecoveryRates")]
-        public GaussianValuesProperty? AccumulatedCuttingsRecoveryRates { get; set; } = null;
+        public GaussianValuesProperty? CuttingsRecoveryRates { get; set; } = null;
 
         [MQTTTopic("DWIS/ComputedData/VolumeDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecovery")]
         public GaussianValuesProperty? AccumulatedCuttingsRecovery { get; set; } = null;

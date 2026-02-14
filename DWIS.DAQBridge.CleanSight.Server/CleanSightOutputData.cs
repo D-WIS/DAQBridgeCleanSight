@@ -89,7 +89,7 @@ namespace DWIS.DAQBridge.CleanSight.Server
         [SemanticFact("DrillDocs#01", Nouns.Enum.InstrumentationCompany)]
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         [MQTTTopic("DWIS/ComputedData/VolumetricFlowrateDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecoveryRates")]
-        public GaussianValuesProperty? AccumulatedCuttingsRecoveryRates { get; set; } = null;
+        public GaussianValuesProperty? CuttingsRecoveryRates { get; set; } = null;
 
         [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
