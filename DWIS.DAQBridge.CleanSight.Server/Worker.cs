@@ -80,6 +80,113 @@ namespace DWIS.DAQBridge.CleanSight.Server
                     }
                 }
             }
-        }      
+        }
+
+        protected override async Task SubscribeTopicsAndConnect(DWISDataWithMQTT data, CancellationToken stoppingToken)
+        {
+            if (_mqttClient is null || Configuration is null)
+                return;
+
+            Dictionary<string, UnitConversion>? unitConversions = null;
+            if (Configuration is not null)
+            {
+                unitConversions = Configuration.UnitConversions;
+            }
+            // Ensure we do not wire handlers multiple times if this method is called again.
+            _mqttClient.ApplicationMessageReceivedAsync -= (e) => MQTTCallBack(e, data, unitConversions);
+            _mqttClient.ApplicationMessageReceivedAsync += (e) => MQTTCallBack(e, data, unitConversions);
+
+            _mqttClient.ConnectedAsync += async _ =>
+            {
+                Logger?.LogInformation("MQTT connected. Subscribing topics...");
+
+                var subscribeOptionsBuilder = new MqttClientSubscribeOptionsBuilder();
+                data.SubscribeMqttTopics(topic => subscribeOptionsBuilder.WithTopicFilter(topic));
+
+                var subOptions = subscribeOptionsBuilder.Build();
+                var result = await _mqttClient.SubscribeAsync(subOptions, stoppingToken);
+
+                // Log SUBACK (very useful in containers)
+                Logger?.LogInformation("MQTT subscribe result: {Result}", result?.Items?.Count);
+            };
+
+            _mqttClient.DisconnectedAsync += async e =>
+            {
+                Logger?.LogWarning("MQTT disconnected: {Reason} {Exception}",
+                    e.Reason, e.Exception?.Message);
+
+                if (stoppingToken.IsCancellationRequested)
+                    return;
+
+                // Simple retry loop/backoff
+                await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
+
+                try
+                {
+                    await _mqttClient.ConnectAsync(BuildMqttOptions(), stoppingToken);
+                }
+                catch (Exception ex)
+                {
+                    Logger?.LogError(ex, "MQTT reconnect failed");
+                }
+            };
+
+            await _mqttClient.ConnectAsync(BuildMqttOptions(), stoppingToken);
+        }
+
+        protected override Task MQTTCallBack(MqttApplicationMessageReceivedEventArgs e, DWISDataWithMQTT data, Dictionary<string, UnitConversion>? unitConversions)
+        {
+            var topic = e.ApplicationMessage.Topic;
+            Logger?.LogInformation("Data received on topic: " + topic);
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                return Task.CompletedTask;
+            }
+
+            var payload = e.ApplicationMessage.Payload;
+            Logger?.LogInformation($"Payload received of length: " + payload.Length);
+            if (payload.IsEmpty)
+            {
+                return Task.CompletedTask;
+            }
+            try
+            {
+                var payloadText = Encoding.UTF8.GetString(payload);
+                Logger?.LogInformation("Payload: " + payloadText);
+                if (data is CleanSightOutputData outputData)
+                {
+                    lock (_lock)
+                    {
+                        outputData.TryApplyMqttValue(topic, payloadText, unitConversions, true, Logger);
+                    }
+                }
+                else
+                {
+                    lock (_lock)
+                    {
+                        data.TryApplyMqttValue(topic, payloadText, unitConversions, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex.ToString());
+            }
+            return Task.CompletedTask;
+        }
+
+        private MqttClientOptions BuildMqttOptions()
+        {
+            // Unique per container instance. If you want persistent sessions, make it stable-but-unique.
+            var clientId = $"{Environment.MachineName}-{Guid.NewGuid():N}";
+
+            return new MqttClientOptionsBuilder()
+                .WithClientId(clientId)
+                .WithTcpServer(Configuration!.MQTTServer, Configuration!.MQTTPort)
+                .WithKeepAlivePeriod(TimeSpan.FromSeconds(15))
+                // Consider explicitly setting clean session semantics:
+                // .WithCleanSession(true)
+                .Build();
+        }
     }
 }

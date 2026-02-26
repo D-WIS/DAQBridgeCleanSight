@@ -5,6 +5,7 @@ using OSDC.UnitConversion.Conversion;
 using OSDC.UnitConversion.Conversion.DrillingEngineering;
 using System.Reflection;
 using DWIS.RigOS.Common.Worker;
+using System.Text.Json;
 
 namespace DWIS.DAQBridge.CleanSight.Server
 {
@@ -277,5 +278,232 @@ namespace DWIS.DAQBridge.CleanSight.Server
         [SemanticFact("CleanSightOverallAverageCuttingSize#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         [MQTTTopic("DWIS/ComputedData/LengthSmall/CuttingSeparatorLogical/OverallAverageCuttingSize")]
         public ScalarProperty? OverallAverageCuttingSize { get; set; } = null;
+
+        public bool TryApplyMqttValue(string topic, string? svalue, Dictionary<string, UnitConversion>? unitConversions, bool createIfNull, ILogger<IDWISWorker<ConfigurationForMQTT>>? logger)
+        {
+            if (string.IsNullOrWhiteSpace(topic))
+            {
+                throw new ArgumentException("Topic cannot be null or whitespace.", nameof(topic));
+            }
+
+            if (!TopicPropertyMap.Value.TryGetValue(topic, out var property))
+            {
+                return false;
+            }
+            UnitConversion unitConversion = new UnitConversion();
+            if (unitConversions is not null && unitConversions.ContainsKey(topic))
+            {
+                unitConversion = unitConversions[topic];
+            }
+            try
+            {
+                if (property.PropertyType == typeof(ScalarProperty))
+                {
+                    var propertyValue = (ScalarProperty?)property.GetValue(this);
+                    if (propertyValue == null)
+                    {
+                        if (!createIfNull)
+                        {
+                            return false;
+                        }
+                        CreateProperty(property);
+                    }
+                    propertyValue = (ScalarProperty?)property.GetValue(this);
+                    if (propertyValue is not null)
+                    {
+                        if (string.IsNullOrEmpty(svalue))
+                        {
+                            propertyValue.Value = null;
+                            return true;
+                        }
+                        var val = JsonSerializer.Deserialize<ScalarProperty>(svalue);
+                        if (val is not null)
+                        {
+                            if (val.Value is not null)
+                            {
+                                val.Value = unitConversion.ToSI(val.Value.Value);
+                            }
+                            propertyValue.Value = val.Value;
+                            propertyValue.Timestamp = (val.Timestamp is not null) ? val.Timestamp : DateTime.UtcNow;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else if (property.PropertyType == typeof(GaussianProperty))
+                {
+                    var propertyValue = (GaussianProperty?)property.GetValue(this);
+                    if (propertyValue == null)
+                    {
+                        if (!createIfNull)
+                        {
+                            return false;
+                        }
+                        CreateProperty(property);
+                    }
+                    propertyValue = (GaussianProperty?)property.GetValue(this);
+                    if (propertyValue is not null)
+                    {
+                        if (string.IsNullOrEmpty(svalue))
+                        {
+                            propertyValue.Mean = null;
+                            propertyValue.StandardDeviation = null;
+                            return true;
+                        }
+                        var val = JsonSerializer.Deserialize<GaussianValue>(svalue);
+                        if (val is not null)
+                        {
+                            GaussianValue convertedValue = val.ToSI(unitConversion);
+                            propertyValue.Mean = convertedValue.Mean;
+                            propertyValue.StandardDeviation = convertedValue.StandardDeviation;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else if (property.PropertyType == typeof(GaussianValuesProperty))
+                {
+                    var propertyValue = (GaussianValuesProperty?)property.GetValue(this);
+                    if (propertyValue == null)
+                    {
+                        if (!createIfNull)
+                        {
+                            return false;
+                        }
+                        CreateProperty(property);
+                    }
+                    propertyValue = (GaussianValuesProperty?)property.GetValue(this);
+                    if (propertyValue is not null)
+                    {
+                        if (string.IsNullOrEmpty(svalue))
+                        {
+                            propertyValue.Values = null;
+                            return true;
+                        }
+                        var values = JsonSerializer.Deserialize<IList<GaussianValue>>(svalue);
+                        if (values is not null)
+                        {
+                            List<GaussianValue> convertedValues = new List<GaussianValue>();
+                            foreach (var value in values)
+                            {
+                                if (value is not null)
+                                {
+                                    convertedValues.Add(value.ToSI(unitConversion));
+                                }
+                            }
+                            propertyValue.Values = convertedValues;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else if (property.PropertyType == typeof(HistogramProperty))
+                {
+                    var propertyValue = (HistogramProperty?)property.GetValue(this);
+                    if (propertyValue == null)
+                    {
+                        if (!createIfNull)
+                        {
+                            return false;
+                        }
+                        CreateProperty(property);
+                    }
+                    propertyValue = (HistogramProperty?)property.GetValue(this);
+                    if (propertyValue is not null)
+                    {
+                        if (string.IsNullOrEmpty(svalue))
+                        {
+                            propertyValue.Value = null;
+                            return true;
+                        }
+                        var val = JsonSerializer.Deserialize<Histogram>(svalue);
+                        if (val is not null)
+                        {
+                            Histogram convertedValue = val.ToSI(unitConversion);
+                            propertyValue.Value = convertedValue;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else if (property.PropertyType == typeof(HistogramsProperty))
+                {
+                    var propertyValue = (HistogramsProperty?)property.GetValue(this);
+                    if (propertyValue == null)
+                    {
+                        if (!createIfNull)
+                        {
+                            return false;
+                        }
+                        CreateProperty(property);
+                    }
+                    propertyValue = (HistogramsProperty?)property.GetValue(this);
+                    if (propertyValue is not null)
+                    {
+                        if (string.IsNullOrEmpty(svalue))
+                        {
+                            propertyValue.Values = null;
+                            return true;
+                        }
+                        var values = JsonSerializer.Deserialize<IList<Histogram>>(svalue);
+                        if (values is not null)
+                        {
+                            List<Histogram> convertedValues = new List<Histogram>();
+                            foreach (var value in values)
+                            {
+                                if (value is not null)
+                                {
+                                    convertedValues.Add(value.ToSI(unitConversion));
+                                }
+                            }
+                            propertyValue.Values = convertedValues;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+                else if (property.PropertyType == typeof(TimeOffsetSeriesProperty))
+                {
+                    var propertyValue = (TimeOffsetSeriesProperty?)property.GetValue(this);
+                    if (propertyValue == null)
+                    {
+                        if (!createIfNull)
+                        {
+                            return false;
+                        }
+                        CreateProperty(property);
+                    }
+                    propertyValue = (TimeOffsetSeriesProperty?)property.GetValue(this);
+                    if (propertyValue is not null)
+                    {
+                        if (string.IsNullOrEmpty(svalue))
+                        {
+                            propertyValue.Values = null;
+                            return true;
+                        }
+                        var values = JsonSerializer.Deserialize<IList<TimeOffsetValue>>(svalue);
+                        if (values is not null)
+                        {
+                            List<TimeOffsetValue> convertedValues = new List<TimeOffsetValue>();
+                            foreach (var value in values)
+                            {
+                                if (value is not null)
+                                {
+                                    convertedValues.Add(value.ToSI(unitConversion));
+                                }
+                            }
+                            propertyValue.Values = convertedValues;
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex.ToString());
+            }
+            return false;
+        }
     }
 }
