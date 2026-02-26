@@ -6,9 +6,30 @@ using OSDC.UnitConversion.Conversion.DrillingEngineering;
 using System.Reflection;
 using DWIS.RigOS.Common.Worker;
 using System.Text.Json;
+using System.Globalization;
 
 namespace DWIS.DAQBridge.CleanSight.Server
 {
+    public sealed class StatisticsDto
+    {
+        public List<DistributionDto> Values { get; set; } = new();
+    }
+
+    public sealed class DistributionDto
+    {
+        public double Mean { get; set; }
+        public double StandardDeviation { get; set; }
+    }
+
+    public sealed class HistogramCollectionDto
+    {
+        public List<HistogramDto> Values { get; set; } = new();
+    }
+
+    public sealed class HistogramDto
+    {
+        public List<double> Bins { get; set; } = new();
+    }
     public class CleanSightOutputData : DWISDataWithMQTT
     {
         private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightOutputData)));
@@ -316,15 +337,30 @@ namespace DWIS.DAQBridge.CleanSight.Server
                             propertyValue.Value = null;
                             return true;
                         }
-                        var val = JsonSerializer.Deserialize<ScalarProperty>(svalue);
-                        if (val is not null)
+                        double? dval = null;
+                        if (double.TryParse(svalue, NumberStyles.Number, CultureInfo.InvariantCulture, out double dval1))
                         {
-                            if (val.Value is not null)
+                            dval = dval1;
+                        }
+                        else
+                        {
+                            try
                             {
-                                val.Value = unitConversion.ToSI(val.Value.Value);
+                                var val = JsonSerializer.Deserialize<ScalarProperty>(svalue);
+                                if (val != null && val.Value is not null)
+                                {
+                                    dval = val.Value.Value;
+                                }
                             }
-                            propertyValue.Value = val.Value;
-                            propertyValue.Timestamp = (val.Timestamp is not null) ? val.Timestamp : DateTime.UtcNow;
+                            catch (Exception ex)
+                            {
+                                logger?.LogError(ex.ToString());
+                            }
+                        }
+                        if (dval is not null)
+                        {
+                            propertyValue.Value = unitConversion.ToSI(dval.Value);
+                            propertyValue.Timestamp = DateTime.UtcNow;
                             return true;
                         }
                     }
@@ -380,20 +416,58 @@ namespace DWIS.DAQBridge.CleanSight.Server
                             propertyValue.Values = null;
                             return true;
                         }
-                        var values = JsonSerializer.Deserialize<IList<GaussianValue>>(svalue);
-                        if (values is not null)
+                        bool succeeded = false;
+                        try
                         {
-                            List<GaussianValue> convertedValues = new List<GaussianValue>();
-                            foreach (var value in values)
+                            var values = JsonSerializer.Deserialize<IList<GaussianValue>>(svalue);
+                            if (values is not null)
                             {
-                                if (value is not null)
+                                List<GaussianValue> convertedValues = new List<GaussianValue>();
+                                foreach (var value in values)
                                 {
-                                    convertedValues.Add(value.ToSI(unitConversion));
+                                    if (value is not null)
+                                    {
+                                        convertedValues.Add(value.ToSI(unitConversion));
+                                    }
+                                }
+                                propertyValue.Values = convertedValues;
+                                succeeded = true;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        if (!succeeded)
+                        {
+                            try
+                            {
+                                var values = JsonSerializer.Deserialize<StatisticsDto>(svalue);
+                                if (values is not null && values.Values is not null)
+                                {
+                                    List<GaussianValue> convertedValues = new List<GaussianValue>();
+                                    foreach (var value in values.Values)
+                                    {
+                                        if (value is not null)
+                                        {
+                                            GaussianValue gaussVal = new GaussianValue();
+                                            gaussVal.Mean = value.Mean;
+                                            gaussVal.StandardDeviation = value.StandardDeviation;
+                                            convertedValues.Add(gaussVal.ToSI(unitConversion));
+                                        }
+                                    }
+                                    propertyValue.Values = convertedValues;
+                                    succeeded = true;
                                 }
                             }
-                            propertyValue.Values = convertedValues;
-                            return true;
+                            catch (Exception)
+                            {
+                            }
                         }
+                        if (!succeeded)
+                        {
+                            logger?.LogError("could not deserialize: " + svalue);
+                        }
+                        return succeeded;
                     }
                     return false;
                 }
@@ -445,20 +519,56 @@ namespace DWIS.DAQBridge.CleanSight.Server
                             propertyValue.Values = null;
                             return true;
                         }
-                        var values = JsonSerializer.Deserialize<IList<Histogram>>(svalue);
-                        if (values is not null)
+                        bool succeeded = false;
+                        try
                         {
-                            List<Histogram> convertedValues = new List<Histogram>();
-                            foreach (var value in values)
+                            var values = JsonSerializer.Deserialize<IList<Histogram>>(svalue);
+                            if (values is not null)
                             {
-                                if (value is not null)
+                                List<Histogram> convertedValues = new List<Histogram>();
+                                foreach (var value in values)
                                 {
-                                    convertedValues.Add(value.ToSI(unitConversion));
+                                    if (value is not null)
+                                    {
+                                        convertedValues.Add(value.ToSI(unitConversion));
+                                    }
+                                }
+                                propertyValue.Values = convertedValues;
+                                succeeded = true;
+                            }
+                        } catch (Exception)
+                        {
+                        }
+                        if (!succeeded)
+                        {
+                            try
+                            {
+                                var values = JsonSerializer.Deserialize<HistogramCollectionDto>(svalue);
+                                if (values is not null && values.Values is not null)
+                                {
+                                    List<Histogram> convertedValues = new List<Histogram>();
+                                    foreach (var value in values.Values)
+                                    {
+                                        if (value is not null)
+                                        {
+                                            Histogram histogram = new Histogram();
+                                            histogram.Bins = value.Bins.ToArray();
+                                            convertedValues.Add(histogram.ToSI(unitConversion));
+                                        }
+                                    }
+                                    propertyValue.Values = convertedValues;
+                                    succeeded = true;
                                 }
                             }
-                            propertyValue.Values = convertedValues;
-                            return true;
+                            catch (Exception)
+                            {
+                            }
                         }
+                        if (!succeeded)
+                        {
+                            logger?.LogError("could not deserialize: " + svalue);
+                        }
+                        return succeeded;
                     }
                     return false;
                 }
