@@ -16,17 +16,26 @@ namespace DWIS.DAQBridge.CleanSight.Model
         public override Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> SparQLQueries { get => LocalSparQLQueries; }
         public override Lazy<IReadOnlyDictionary<PropertyInfo, ManifestFile>> Manifests { get => LocalManifests; }
 
-        [MQTTTopic("DWIS/ComputedData/DimensionLessStandard/CuttingSeparatorLogical/ShakerLoadEstimates")]
-        public ScalarProperty? ShakerLoadEstimates { get; set; } = null;
+        [MQTTTopic("DWIS/ComputedData/DimensionLessStandard/CuttingSeparatorLogical/ShakerLoadEstimates_1")]
+        public ScalarProperty? ShakerLoadEstimatesA { get; set; } = null;
+
+        [MQTTTopic("DWIS/ComputedData/DimensionLessStandard/CuttingSeparatorLogical/ShakerLoadEstimates_2")]
+        public ScalarProperty? ShakerLoadEstimatesB { get; set; } = null;
 
         [MQTTTopic("DWIS/ComputedData/DimensionLessStandard/CuttingSeparatorLogical/AverageShakerLoadEstimate")]
         public ScalarProperty? AverageShakerLoadEstimate { get; set; } = null;
 
-        [MQTTTopic("DWIS/ComputedData/VolumetricFlowrateDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecoveryRates")]
-        public ScalarProperty? CuttingsRecoveryRates { get; set; } = null;
+        [MQTTTopic("DWIS/ComputedData/VolumetricFlowrateDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecoveryRates_1")]
+        public ScalarProperty? CuttingsRecoveryRatesA { get; set; } = null;
 
-        [MQTTTopic("DWIS/ComputedData/VolumeDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecovery")]
-        public ScalarProperty? AccumulatedCuttingsRecovery { get; set; } = null;
+        [MQTTTopic("DWIS/ComputedData/VolumetricFlowrateDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecoveryRates_2")]
+        public ScalarProperty? CuttingsRecoveryRatesB { get; set; } = null;
+
+        [MQTTTopic("DWIS/ComputedData/VolumeDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecovery_1")]
+        public ScalarProperty? AccumulatedCuttingsRecoveryA { get; set; } = null;
+
+        [MQTTTopic("DWIS/ComputedData/VolumeDrilling/CuttingSeparatorLogical/AccumulatedCuttingsRecovery_2")]
+        public ScalarProperty? AccumulatedCuttingsRecoveryB { get; set; } = null;
 
         [MQTTTopic("DWIS/ComputedData/VolumeDrilling/CuttingSeparatorLogical/OverallCuttingsRecovery")]
         public ScalarProperty? OverallCuttingsRecovery { get; set; } = null;

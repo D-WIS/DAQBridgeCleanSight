@@ -104,25 +104,43 @@ namespace DWIS.DAQBridge.CleanSight.Server
         {
             try
             {
-                if (rawData.ShakerLoadEstimates is not null)
+                cleanSightOutputData.ShakerLoadEstimates ??= new ScalarsProperty();
+                cleanSightOutputData.ShakerLoadEstimates.Value ??= new List<double>();
+                cleanSightOutputData.ShakerLoadEstimates.Value.Clear();
+                if (rawData.ShakerLoadEstimatesA is not null)
                 {
-                    cleanSightOutputData.ShakerLoadEstimates ??= new ScalarProperty();
-                    cleanSightOutputData.ShakerLoadEstimates.Value = rawData.ShakerLoadEstimates.Value;
+                    cleanSightOutputData.ShakerLoadEstimates.Value.Add(rawData.ShakerLoadEstimatesA.Value == null ? 0 : rawData.ShakerLoadEstimatesA.Value.Value);
+                }
+                if (rawData.ShakerLoadEstimatesB is not null)
+                {
+                    cleanSightOutputData.ShakerLoadEstimates.Value.Add(rawData.ShakerLoadEstimatesB.Value == null ? 0 : rawData.ShakerLoadEstimatesB.Value.Value);
                 }
                 if (rawData.AverageShakerLoadEstimate is not null)
                 {
                     cleanSightOutputData.AverageShakerLoadEstimate ??= new ScalarProperty();
                     cleanSightOutputData.AverageShakerLoadEstimate.Value = rawData.AverageShakerLoadEstimate.Value;
                 }
-                if (rawData.CuttingsRecoveryRates is not null)
+                cleanSightOutputData.CuttingsRecoveryRates ??= new ScalarsProperty();
+                cleanSightOutputData.CuttingsRecoveryRates.Value ??= new List<double>();
+                cleanSightOutputData.CuttingsRecoveryRates.Value.Clear();
+                if (rawData.CuttingsRecoveryRatesA is not null)
                 {
-                    cleanSightOutputData.CuttingsRecoveryRates ??= new ScalarProperty();
-                    cleanSightOutputData.CuttingsRecoveryRates.Value = rawData.CuttingsRecoveryRates.Value;
+                    cleanSightOutputData.CuttingsRecoveryRates.Value.Add(rawData.CuttingsRecoveryRatesA.Value == null ? 0 : rawData.CuttingsRecoveryRatesA.Value.Value);
                 }
-                if (rawData.AccumulatedCuttingsRecovery is not null)
+                if (rawData.CuttingsRecoveryRatesB is not null)
                 {
-                    cleanSightOutputData.AccumulatedCuttingsRecovery ??= new ScalarProperty();
-                    cleanSightOutputData.AccumulatedCuttingsRecovery.Value = rawData.AccumulatedCuttingsRecovery.Value;
+                    cleanSightOutputData.CuttingsRecoveryRates.Value.Add(rawData.CuttingsRecoveryRatesB.Value == null ? 0 : rawData.CuttingsRecoveryRatesB.Value.Value);
+                }
+                cleanSightOutputData.AccumulatedCuttingsRecovery ??= new ScalarsProperty();
+                cleanSightOutputData.AccumulatedCuttingsRecovery.Value ??= new List<double>();
+                cleanSightOutputData.AccumulatedCuttingsRecovery.Value.Clear();
+                if (rawData.AccumulatedCuttingsRecoveryA is not null)
+                {
+                    cleanSightOutputData.AccumulatedCuttingsRecovery.Value.Add(rawData.AccumulatedCuttingsRecoveryA.Value == null ? 0 : rawData.AccumulatedCuttingsRecoveryA.Value.Value);
+                }
+                if (rawData.AccumulatedCuttingsRecoveryB is not null)
+                {
+                    cleanSightOutputData.AccumulatedCuttingsRecovery.Value.Add(rawData.AccumulatedCuttingsRecoveryB.Value == null ? 0 : rawData.AccumulatedCuttingsRecoveryB.Value.Value);
                 }
                 if (rawData.OverallCuttingsRecovery is not null)
                 {

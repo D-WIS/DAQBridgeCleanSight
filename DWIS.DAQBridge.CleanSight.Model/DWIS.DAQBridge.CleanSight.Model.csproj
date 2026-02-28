@@ -7,7 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DWIS.RigOS.Common.Worker" Version="1.0.5-build.462" />
+    <PackageReference Include="DWIS.RigOS.Common.Worker" Version="1.0.5-build.463" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\DWIS.RigOS.Common.Worker\DWIS.RigOS.Common.Worker.csproj" />
   </ItemGroup>
 
 </Project>

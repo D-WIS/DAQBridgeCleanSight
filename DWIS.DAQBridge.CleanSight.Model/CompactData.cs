@@ -11,13 +11,16 @@ namespace DWIS.DAQBridge.CleanSight.Model
     public class CompactData
     {
         public DateTimeOffset? TimeStampUTC { get; set; } = null;
-        public double? ShakerLoadEstimates { get; set; } = null;
+        public double? ShakerLoadEstimatesA { get; set; } = null;
+        public double? ShakerLoadEstimatesB { get; set; } = null;
 
         public double? AverageShakerLoadEstimate { get; set; } = null;
 
-        public double? CuttingsRecoveryRates { get; set; } = null;
+        public double? CuttingsRecoveryRatesA { get; set; } = null;
+        public double? CuttingsRecoveryRatesB { get; set; } = null;
 
-        public double? AccumulatedCuttingsRecovery { get; set; } = null;
+        public double? AccumulatedCuttingsRecoveryA { get; set; } = null;
+        public double? AccumulatedCuttingsRecoveryB { get; set; } = null;
 
         public double? OverallCuttingsRecovery { get; set; } = null;
 
@@ -72,24 +75,35 @@ namespace DWIS.DAQBridge.CleanSight.Model
         public void Transfer(CleanSightRawData rawData, DateTimeOffset timeStamp)
         {
             TimeStampUTC = timeStamp;
-            if (rawData.ShakerLoadEstimates is not null)
+            if (rawData.ShakerLoadEstimatesA is not null)
             {
-                ShakerLoadEstimates = rawData.ShakerLoadEstimates.Value;
+                ShakerLoadEstimatesA = rawData.ShakerLoadEstimatesA.Value;
             }
-
+            if (rawData.ShakerLoadEstimatesB is not null)
+            {
+                ShakerLoadEstimatesB = rawData.ShakerLoadEstimatesB.Value;
+            }
             if (rawData.AverageShakerLoadEstimate is not null)
             {
                 AverageShakerLoadEstimate = rawData.AverageShakerLoadEstimate.Value;
             }
 
-            if (rawData.CuttingsRecoveryRates is not null)
+            if (rawData.CuttingsRecoveryRatesA is not null)
             {
-                CuttingsRecoveryRates = rawData.CuttingsRecoveryRates.Value;
+                CuttingsRecoveryRatesA = rawData.CuttingsRecoveryRatesA.Value;
+            }
+            if (rawData.CuttingsRecoveryRatesB is not null)
+            {
+                CuttingsRecoveryRatesB = rawData.CuttingsRecoveryRatesB.Value;
             }
 
-            if (rawData.AccumulatedCuttingsRecovery is not null)
+            if (rawData.AccumulatedCuttingsRecoveryA is not null)
             {
-                AccumulatedCuttingsRecovery = rawData.AccumulatedCuttingsRecovery.Value;
+                AccumulatedCuttingsRecoveryA = rawData.AccumulatedCuttingsRecoveryA.Value;
+            }
+            if (rawData.AccumulatedCuttingsRecoveryB is not null)
+            {
+                AccumulatedCuttingsRecoveryB = rawData.AccumulatedCuttingsRecoveryB.Value;
             }
 
             if (rawData.OverallCuttingsRecovery is not null)
