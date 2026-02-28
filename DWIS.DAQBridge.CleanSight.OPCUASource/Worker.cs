@@ -1,14 +1,15 @@
 using DWIS.Client.ReferenceImplementation.OPCFoundation;
 using DWIS.RigOS.Common.Worker;
+using DWIS.DAQBridge.CleanSight.Model;
 
 namespace DWIS.DAQBridge.CleanSight.OPCUASource
 {
-    public class Worker : DWISWorker<Configuration>
+    public class Worker : DWISWorker<ConfigurationForCleanSight, CompactData>
     {
-        private CleanSightOperationData OperationData { get; set; } = new CleanSightOperationData();
-        private CleanSightResults Results { get; set; } = new CleanSightResults();
+        private CleanSightInputData OperationData { get; set; } = new CleanSightInputData();
+        private CleanSightOutputData Results { get; set; } = new CleanSightOutputData();
 
-        public Worker(ILogger<IDWISWorker<Configuration>> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
+        public Worker(ILogger<IDWISWorker<ConfigurationForCleanSight>> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
         {
         }
  
@@ -18,7 +19,7 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
             if (_DWISClient != null && _DWISClient.Connected)
             {
                 await RegisterQueries(Results);
-                await RegisterToBlackboard(OperationData);
+                await RegisterToBlackboard(OperationData, true);
                 await Loop(stoppingToken);
             }
         }

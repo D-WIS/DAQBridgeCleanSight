@@ -7,5 +7,6 @@
 /**/_site
 *.suo
 *.user
+_build_tmp
 .vs/
 UpgradeLog*.htm

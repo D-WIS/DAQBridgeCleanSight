@@ -9,7 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DWIS.RigOS.Common.Worker" Version="1.0.5-build.442" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DWIS.DAQBridge.CleanSight.Model\DWIS.DAQBridge.CleanSight.Model.csproj" />
   </ItemGroup>
 </Project>

@@ -6,18 +6,20 @@ using OSDC.UnitConversion.Conversion;
 using OSDC.UnitConversion.Conversion.DrillingEngineering;
 using System.Reflection;
 
-namespace DWIS.DAQBridge.CleanSight.OPCUASource
+namespace DWIS.DAQBridge.CleanSight.Model
 {
-    internal class CleanSightResults : DWISData
+    public class CleanSightOutputData : DWISDataWithMQTT<ConfigurationForCleanSight>
     {
-        private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightResults)));
-        private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, ManifestFile>> LocalManifests = new(BuildManifests(typeof(CleanSightResults), "CleanSightResultsManifest", "DrillDocs", "DWISBridge"));
+        private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightOutputData)));
+        private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightOutputData)));
+        private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, ManifestFile>> LocalManifests = new(BuildManifests(typeof(CleanSightOutputData), "CleanSightOutputData", "DrillDocs", "DWISBridge"));
+        public override Lazy<IReadOnlyDictionary<string, PropertyInfo>> TopicPropertyMap { get => LocalTopicPropertyMap; }
         public override Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> SparQLQueries { get => LocalSparQLQueries; }
         public override Lazy<IReadOnlyDictionary<PropertyInfo, ManifestFile>> Manifests { get => LocalManifests; }
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
-        [SemanticStringVariable("CleanSightShakerLoadEstimate")]
+        [SemanticDiracVariable("CleanSightShakerLoadEstimate")]
         [SemanticFact("CleanSightShakerLoadEstimate", Nouns.Enum.DynamicDrillingSignal)]
         [SemanticFact("CleanSightShakerLoadEstimate#01", Nouns.Enum.ComputedData)]
         [SemanticFact("CleanSightShakerLoadEstimate#01", Nouns.Enum.JSonDataType)]
@@ -35,9 +37,9 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightShakerLoadEstimate#01", Verbs.Enum.IsComputedBy, "ImageInterpreter#01")]
         [SemanticFact("DrillDocs#01", Nouns.Enum.InstrumentationCompany)]
         [SemanticFact("CleanSightShakerLoadEstimate#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
-        public GaussianValuesProperty? ShakerLoadEstimates { get; set; } = null;
+        public ScalarProperty? ShakerLoadEstimates { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticDiracVariable("CleanSightAverageShakerLoadEstimate")]
         [SemanticFact("CleanSightAverageShakerLoadEstimate", Nouns.Enum.DynamicDrillingSignal)]
@@ -61,9 +63,9 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightAverageShakerLoadEstimate#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         public ScalarProperty? AverageShakerLoadEstimate { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
-        [SemanticStringVariable("CleanSightCuttingsRecoveryRate")]
+        [SemanticDiracVariable("CleanSightCuttingsRecoveryRate")]
         [SemanticFact("CleanSightCuttingsRecoveryRate", Nouns.Enum.DynamicDrillingSignal)]
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Nouns.Enum.ComputedData)]
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Nouns.Enum.JSonDataType)]
@@ -84,11 +86,11 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Verbs.Enum.IsComputedBy, "ImageInterpreter#01")]
         [SemanticFact("DrillDocs#01", Nouns.Enum.InstrumentationCompany)]
         [SemanticFact("CleanSightCuttingsRecoveryRate#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
-        public GaussianValuesProperty? CuttingsRecoveryRates { get; set; } = null;
+        public ScalarProperty? CuttingsRecoveryRates { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
-        [SemanticStringVariable("CleanSightAccumulatedCuttingsRecovery")]
+        [SemanticDiracVariable("CleanSightAccumulatedCuttingsRecovery")]
         [SemanticFact("CleanSightAccumulatedCuttingsRecovery", Nouns.Enum.DynamicDrillingSignal)]
         [SemanticFact("CleanSightAccumulatedCuttingsRecovery#01", Nouns.Enum.ComputedData)]
         [SemanticFact("CleanSightAccumulatedCuttingsRecovery#01", Nouns.Enum.JSonDataType)]
@@ -109,9 +111,9 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightAccumulatedCuttingsRecovery#01", Verbs.Enum.IsComputedBy, "ImageInterpreter#01")]
         [SemanticFact("DrillDocs#01", Nouns.Enum.InstrumentationCompany)]
         [SemanticFact("CleanSightAccumulatedCuttingsRecovery#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
-        public GaussianValuesProperty? AccumulatedCuttingsRecovery { get; set; } = null;
+        public ScalarProperty? AccumulatedCuttingsRecovery { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticDiracVariable("CleanSightTotalAccumulatedCuttingsRecovery")]
         [SemanticFact("CleanSightTotalAccumulatedCuttingsRecovery", Nouns.Enum.DynamicDrillingSignal)]
@@ -138,7 +140,7 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightTotalAccumulatedCuttingsRecovery#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         public ScalarProperty? OverallCuttingsRecovery { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticDiracVariable("CleanSightTotalTheoreticalAccumulatedCuttingsRecovery")]
         [SemanticFact("CleanSightTotalTheoreticalAccumulatedCuttingsRecovery", Nouns.Enum.DynamicDrillingSignal)]
@@ -165,7 +167,7 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightTotalTheoreticalAccumulatedCuttingsRecovery#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         public ScalarProperty? TotalTheoreticalCuttingsVolume { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticStringVariable("CleanSightShakerLoadDistribution")]
         [SemanticFact("CleanSightShakerLoadDistribution", Nouns.Enum.DynamicDrillingSignal)]
@@ -187,9 +189,9 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightShakerLoadDistribution#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         public HistogramsProperty? ShakerLoadDistributions { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
-        [SemanticStringVariable("CleanSightMaxCavingSize")]
+        [SemanticDiracVariable("CleanSightMaxCavingSize")]
         [SemanticFact("CleanSightMaxCavingSize", Nouns.Enum.DynamicDrillingSignal)]
         [SemanticFact("CleanSightMaxCavingSize#01", Nouns.Enum.ComputedData)]
         [SemanticFact("CleanSightMaxCavingSize#01", Nouns.Enum.JSonDataType)]
@@ -210,9 +212,9 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightMaxCavingSize#01", Verbs.Enum.IsComputedBy, "ImageInterpreter#01")]
         [SemanticFact("DrillDocs#01", Nouns.Enum.InstrumentationCompany)]
         [SemanticFact("CleanSightMaxCavingSize#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
-        public GaussianValuesProperty? MaxCavingSizes { get; set; } = null;
+        public ScalarProperty? MaxCavingSizes { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticDiracVariable("CleanSightOverallMaxCavingSize")]
         [SemanticFact("CleanSightOverallMaxCavingSize", Nouns.Enum.DynamicDrillingSignal)]
@@ -239,7 +241,7 @@ namespace DWIS.DAQBridge.CleanSight.OPCUASource
         [SemanticFact("CleanSightOverallMaxCavingSize#01", Verbs.Enum.IsProvidedBy, "DrillDocs#01")]
         public ScalarProperty? OverallMaxCavingSize { get; set; } = null;
 
-        [AccessToVariable(CommonProperty.VariableAccessType.Readable)]
+        [AccessToVariable(CommonProperty.VariableAccessType.Assignable)]
         [Mandatory(CommonProperty.MandatoryType.General)]
         [SemanticDiracVariable("CleanSightOverallAverageCuttingSize")]
         [SemanticFact("CleanSightOverallAverageCuttingSize", Nouns.Enum.DynamicDrillingSignal)]

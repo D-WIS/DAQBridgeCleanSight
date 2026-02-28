@@ -4,10 +4,11 @@ using DWIS.Vocabulary.Schemas;
 using OSDC.DotnetLibraries.Drilling.DrillingProperties;
 using OSDC.UnitConversion.Conversion.DrillingEngineering;
 using System.Reflection;
+using DWIS.DAQBridge.CleanSight.Model;
 
 namespace DWIS.DAQBridge.CleanSight.MQTTSource
 {
-    internal class CleanSightOperationData : DWISDataWithMQTT
+    internal class CleanSightOperationData : DWISDataWithMQTT<ConfigurationForCleanSight>
     {
         private static readonly Lazy<IReadOnlyDictionary<string, PropertyInfo>> LocalTopicPropertyMap = new(BuildTopicPropertyMap(typeof(CleanSightOperationData)));
         private static readonly Lazy<IReadOnlyDictionary<PropertyInfo, Dictionary<string, QuerySpecification>>> LocalSparQLQueries = new(BuildSparQLQueries(typeof(CleanSightOperationData)));

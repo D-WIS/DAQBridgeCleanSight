@@ -1,16 +1,17 @@
 using DWIS.Client.ReferenceImplementation.OPCFoundation;
 using MQTTnet;
 using DWIS.RigOS.Common.Worker;
+using DWIS.DAQBridge.CleanSight.Model;
 
 namespace DWIS.DAQBridge.CleanSight.MQTTSource
 {
-    public class Worker : DWISWorkerWithMQTT<ConfigurationForMQTT>
+    public class Worker : DWISWorkerWithMQTT<ConfigurationForCleanSight, CompactData>
     {
         private CleanSightOperationData OperationData { get; } = new CleanSightOperationData();
 
-        private CleanSightResults CleanSightResults { get; } = new CleanSightResults();
+        private CleanSightRawData CleanSightRawData { get; } = new CleanSightRawData();
 
-        public Worker(ILogger<IDWISWorker<ConfigurationForMQTT>> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
+        public Worker(ILogger<IDWISWorker<ConfigurationForCleanSight>> logger, ILogger<DWISClientOPCF>? loggerDWISClient) : base(logger, loggerDWISClient)
         {
         }
 
@@ -33,16 +34,16 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
                 {
                     while (!stoppingToken.IsCancellationRequested)
                     {
-                        FillRandomData(CleanSightResults);
-                        await PublishMQTTAsync(CleanSightResults, stoppingToken);
+                        FillRandomData(CleanSightRawData);
+                        await PublishMQTTAsync(CleanSightRawData, stoppingToken);
                         lock (_lock)
                         {
-                            if (CleanSightResults.OverallCuttingsRecovery is not null &&
-                                CleanSightResults.OverallCuttingsRecovery.Value is not null)
+                            if (CleanSightRawData.OverallCuttingsRecovery is not null &&
+                                CleanSightRawData.OverallCuttingsRecovery.Value is not null)
                             {
                                 if (Logger is not null && Logger.IsEnabled(LogLevel.Information))
                                 {
-                                    Logger?.LogInformation("Overall Cuttings Recovery: " + CleanSightResults.OverallCuttingsRecovery.Value.Value.ToString("F3"));
+                                    Logger?.LogInformation("Overall Cuttings Recovery: " + CleanSightRawData.OverallCuttingsRecovery.Value.Value.ToString("F3"));
                                 }
                             }
                         }
@@ -57,7 +58,7 @@ namespace DWIS.DAQBridge.CleanSight.MQTTSource
                                 }
                             }
                         }
-                        ConfigurationUpdater<ConfigurationForMQTT>.Instance.UpdateConfiguration(this);
+                        ConfigurationUpdater<ConfigurationForCleanSight>.Instance.UpdateConfiguration(this);
                         await Task.Delay(LoopSpan, stoppingToken);
                     }
                 }
