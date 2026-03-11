@@ -24,3 +24,9 @@ flow, density, pressure, ROP, WOB, torque, RPM, block position, lag time/depth, 
 ### Runtime behavior
 The worker connects to MQTT, publishes randomized result values at a fixed loop interval, and logs
 both a CleanSight result and an operational signal for quick verification.
+
+## Docker
+To install and run the CleanSight MQTT Source. Here is the installation command:
+```sh
+docker run -dit --name CleanSightMQTTSource -v c:\Volumes\DWISDAQBridgeCleanSightMQTTSource:/home digiwells/dwisdaqbridgecleansightmqttsource:stable
+```

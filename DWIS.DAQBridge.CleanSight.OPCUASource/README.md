@@ -29,3 +29,9 @@ timer, then reads CleanSight result values and logs a sample of each.
 ### Configuration note
 The OPC UA client configuration is stored in `config/Quickstarts.ReferenceClient.Config.xml` and
 controls certificate and endpoint behavior for the Blackboard connection.
+
+## Docker
+To install and run the CleanSight OPC-UA Source. Here is the installation command:
+```sh
+docker run -dit --name CleanSightOPCUASource -v c:\Volumes\DWISDAQBridgeCleanSightOPCUASource:/home digiwells/dwisdaqbridgecleansightopcuasource:stable
+```
