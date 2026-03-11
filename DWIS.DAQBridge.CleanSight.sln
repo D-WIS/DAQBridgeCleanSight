@@ -11,8 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DWIS.DAQBridge.CleanSight.O
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\docker-build-push-interpreter.yml = .github\workflows\docker-build-push-interpreter.yml
+		.github\workflows\docker-build-push-MQTT-Source.yml = .github\workflows\docker-build-push-MQTT-Source.yml
+		.github\workflows\docker-build-push-OPCUA-Source.yml = .github\workflows\docker-build-push-OPCUA-Source.yml
 		README.md = README.md
+		.github\workflows\docker-build-push-server.yml = .github\workflows\docker-build-push-server.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DWIS.DAQBridge.CleanSight.Model", "DWIS.DAQBridge.CleanSight.Model\DWIS.DAQBridge.CleanSight.Model.csproj", "{4C8B7C20-6F05-4D8D-BCD8-E31C99C8E6FF}"
